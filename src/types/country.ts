@@ -7,3 +7,7 @@ export type Country = {
     png: string;
   };
 };
+
+export type SelectedCountry = Country & {
+  isSelected: boolean;
+};
