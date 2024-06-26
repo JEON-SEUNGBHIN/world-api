@@ -54,7 +54,7 @@ const CountryList: React.FC = () => {
   return (
     <div className="w-3/4 flex flex-col items-center m-auto gap-2">
       <h1 className="font-semibold text-2xl">Favorite Countries</h1>
-      <ul className="grid lg:grid-cols-4 md:grid-cols-3">
+      <ul className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
         {countries
           .filter((country) => country.isSelected)
           .map((country) => (

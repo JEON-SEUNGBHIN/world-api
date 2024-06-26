@@ -16,7 +16,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, handleSelect }) => {
         <img
           src={country.flags.png}
           alt={`${country.name.common} flag`}
-          className="w-1/2 m-auto"
+          className="w-1/2 h-1/2 m-auto object-cover"
         />
       <div>
         <h3 className="text-lg font-medium mt-4">{country.name.common}</h3>
