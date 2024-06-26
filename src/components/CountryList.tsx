@@ -61,7 +61,7 @@ const CountryList: React.FC = () => {
             <CountryCard
               key={country.name.common}
               country={country}
-              handleSelect={handleSelect} // CountryCard에 handleSelect 함수 전달
+              handleSelect={handleSelect}
             />
           ))}
       </ul>
@@ -73,7 +73,7 @@ const CountryList: React.FC = () => {
             <CountryCard
               key={country.name.common}
               country={country}
-              handleSelect={handleSelect} // CountryCard에 handleSelect 함수 전달
+              handleSelect={handleSelect}
             />
           ))}
       </ul>
