@@ -1,52 +1,81 @@
-import React, { useState } from "react";
-import { Country } from "../types/country";
+import React, { useEffect, useState } from "react";
+import { SelectedCountry } from "../types/country";
+import { getCountries } from "../api/worldApi";
+import { AxiosError } from "axios";
 import CountryCard from "./CountryCard";
 
-interface CountryListProps {
-  countries: Country[];
-  setCountries: React.Dispatch<React.SetStateAction<Country[]>>;
-}
+const CountryList: React.FC = () => {
+  const [countries, setCountries] = useState<SelectedCountry[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<AxiosError | null>(null);
 
-const CountryList: React.FC<CountryListProps> = ({ countries, setCountries }) => {
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const data = await getCountries();
+        const selectedCountries = data.map((country) => ({
+          ...country,
+          isSelected: false,
+        }));
+        setCountries(selectedCountries);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          setError(error);
+        } else {
+          console.error(error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleSelect = (countryName: string) => {
-    setSelectedCountries((prevSelected) =>
-      prevSelected.includes(countryName)
-        ? prevSelected.filter((name) => name !== countryName)
-        : [...prevSelected, countryName]
+    fetchCountries();
+  }, []);
+
+  const handleSelect = (selectedCountry: SelectedCountry) => {
+    setCountries((prevCountries) =>
+      prevCountries.map((country) =>
+        country.name.common === selectedCountry.name.common
+          ? { ...country, isSelected: !country.isSelected }
+          : country
+      )
     );
   };
 
-  const favoriteCountries = countries.filter((country) =>
-    selectedCountries.includes(country.name.common)
-  );
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
 
-  const remainingCountries = countries.filter(
-    (country) => !selectedCountries.includes(country.name.common)
-  );
+  if (error) {
+    console.error(error);
+    return <div>에러가 발생했습니다!!</div>;
+  }
 
   return (
     <div>
       <h2>Favorite Countries</h2>
       <ul>
-        {favoriteCountries.map((country) => (
-          <CountryCard
-            key={country.name.common}
-            country={country}
-            handleSelect={handleSelect}
-          />
-        ))}
+        {countries
+          .filter((country) => country.isSelected)
+          .map((country) => (
+            <CountryCard
+              key={country.name.common}
+              country={country}
+              handleSelect={handleSelect} // CountryCard에 handleSelect 함수 전달
+            />
+          ))}
       </ul>
       <h2>Countries</h2>
       <ul>
-        {remainingCountries.map((country) => (
-          <CountryCard
-            key={country.name.common}
-            country={country}
-            handleSelect={handleSelect}
-          />
-        ))}
+        {countries
+          .filter((country) => !country.isSelected)
+          .map((country) => (
+            <CountryCard
+              key={country.name.common}
+              country={country}
+              handleSelect={handleSelect} // CountryCard에 handleSelect 함수 전달
+            />
+          ))}
       </ul>
     </div>
   );

@@ -1,16 +1,19 @@
 import React from "react";
-import { Country } from "../types/country";
+import { SelectedCountry} from "../types/country";
 
 interface CountryCardProps {
-  country: Country;
-  handleSelect: (countryName: string) => void;
+  country: SelectedCountry; // SelectedCountry 타입
+  handleSelect: (country: SelectedCountry) => void; // 부모 컴포넌트에서 전달된 함수
 }
 
-const CountryCard: React.FC<CountryCardProps> = ({ country, handleSelect }) => {
+const CountryCard: React.FC<CountryCardProps> = ({
+  country,
+  handleSelect,
+}) => {
   return (
     <li
       key={country.name.common}
-      onClick={() => handleSelect(country.name.common)}
+      onClick={() => handleSelect(country)}
     >
       <div>
         <h3>{country.name.common}</h3>
